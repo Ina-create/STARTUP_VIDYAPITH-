@@ -1,9 +1,3 @@
-# First, let's see the current .gitignore
-Get-Content .gitignore
-
-# The problem: You have PowerShell commands IN the .gitignore file
-# Let's create a clean .gitignore
-Set-Content .gitignore @'
 # Logs
 logs
 *.log
@@ -33,7 +27,7 @@ dist-ssr
 Backend/node_modules/
 Backend/.env
 Backend/.env.*
-!Backend/.env.example  # This EXCLUDES .env.example from ignoring
+!Backend/.env.example
 Backend/uploads/
 Backend/logs/
 
@@ -43,7 +37,3 @@ Frontend/.env
 Frontend/.env.*
 Frontend/dist/
 Frontend/build/
-'@
-
-# Verify it's clean
-Get-Content .gitignore
