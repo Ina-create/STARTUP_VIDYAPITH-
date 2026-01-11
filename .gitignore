@@ -1,3 +1,9 @@
+# First, let's see the current .gitignore
+Get-Content .gitignore
+
+# The problem: You have PowerShell commands IN the .gitignore file
+# Let's create a clean .gitignore
+Set-Content .gitignore @'
 # Logs
 logs
 *.log
@@ -23,14 +29,21 @@ dist-ssr
 *.sln
 *.sw?
 
-# Add these specific lines to your existing .gitignore
-Add-Content .gitignore @'
-
 # ========== NODE.JS BACKEND IGNORES ==========
 Backend/node_modules/
 Backend/.env
 Backend/.env.*
-!Backend/.env.example  # Keep the example file
+!Backend/.env.example  # This EXCLUDES .env.example from ignoring
 Backend/uploads/
 Backend/logs/
+
+# ========== FRONTEND IGNORES ==========
+Frontend/node_modules/
+Frontend/.env
+Frontend/.env.*
+Frontend/dist/
+Frontend/build/
 '@
+
+# Verify it's clean
+Get-Content .gitignore
