@@ -1,7 +1,8 @@
-// src/pages/DashboardPage.js - UPDATED WITH FIXES
+// src/Pages/DashboardPage.js - UPDATED WITH ENVIRONMENT VARIABLES
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../Pages/AuthContext';
 import Header from '../Components/Header/Header.jsx';
+import { API_BASE_URL, BACKEND_URL } from '../constants.jsx';
 import './DashboardPage.css';
 
 const DashboardPage = () => {
@@ -49,6 +50,8 @@ const DashboardPage = () => {
     console.log('Profile data state:', profileData);
     console.log('Profile image exists:', !!profileData.profileImage);
     console.log('Profile image URL:', profileData.profileImage);
+    console.log('API Base URL:', API_BASE_URL);
+    console.log('Backend URL:', BACKEND_URL);
   }, [user, profileData]);
 
   useEffect(() => {
@@ -63,8 +66,8 @@ const DashboardPage = () => {
     if (!url) return null;
     if (url.startsWith('http')) return url;
     if (url.startsWith('data:image')) return url;
-    if (url.startsWith('/uploads')) return `http://localhost:5000${url}`;
-    return `http://localhost:5000/uploads/profiles/${url}`;
+    if (url.startsWith('/uploads')) return `${BACKEND_URL}${url}`;
+    return `${BACKEND_URL}/uploads/profiles/${url}`;
   };
 
   // Fetch all dashboard data from backend
@@ -85,7 +88,7 @@ const DashboardPage = () => {
       console.log('=== FETCHING STUDENT PROFILE ===');
       
       // Fetch student profile - FIRST check if endpoint exists
-      const profileResponse = await fetch('http://localhost:5000/api/students/profile', {
+      const profileResponse = await fetch(`${API_BASE_URL}/students/profile`, {
         headers: { 
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -159,7 +162,7 @@ const DashboardPage = () => {
     try {
       console.log('Trying alternative endpoint: /api/users/profile');
       
-      const response = await fetch('http://localhost:5000/api/users/profile', {
+      const response = await fetch(`${API_BASE_URL}/users/profile`, {
         headers: { 
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -204,8 +207,8 @@ const DashboardPage = () => {
       
       // Try multiple endpoints for applications
       const endpoints = [
-        'http://localhost:5000/api/students/applications',
-        'http://localhost:5000/api/applications/student'
+        `${API_BASE_URL}/students/applications`,
+        `${API_BASE_URL}/applications/student`
       ];
       
       for (const endpoint of endpoints) {
@@ -261,7 +264,7 @@ const DashboardPage = () => {
       const token = localStorage.getItem('token');
       if (!token) return;
 
-      const response = await fetch('http://localhost:5000/api/applications/notifications', {
+      const response = await fetch(`${API_BASE_URL}/applications/notifications`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -288,7 +291,7 @@ const DashboardPage = () => {
   const markNotificationAsRead = async (notificationId) => {
     try {
       const token = localStorage.getItem('token');
-      await fetch(`http://localhost:5000/api/applications/notifications/${notificationId}/read`, {
+      await fetch(`${API_BASE_URL}/applications/notifications/${notificationId}/read`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -348,7 +351,7 @@ const DashboardPage = () => {
       
       console.log('Uploading image...');
       
-      const response = await fetch('http://localhost:5000/api/students/upload-image', {
+      const response = await fetch(`${API_BASE_URL}/students/upload-image`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -370,7 +373,7 @@ const DashboardPage = () => {
         // Get image URL and make it absolute
         let imageUrl = data.imageUrl || data.profileImage;
         if (imageUrl && !imageUrl.startsWith('http')) {
-          imageUrl = `http://localhost:5000${imageUrl}`;
+          imageUrl = `${BACKEND_URL}${imageUrl}`;
         }
         
         console.log('Image uploaded successfully:', imageUrl);
@@ -416,7 +419,7 @@ const DashboardPage = () => {
       const formData = new FormData();
       formData.append('resume', file);
       
-      const response = await fetch('http://localhost:5000/api/students/upload-resume', {
+      const response = await fetch(`${API_BASE_URL}/students/upload-resume`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -435,7 +438,7 @@ const DashboardPage = () => {
       if (data.success) {
         let resumeUrl = data.resumeUrl || data.resume;
         if (resumeUrl && !resumeUrl.startsWith('http')) {
-          resumeUrl = `http://localhost:5000${resumeUrl}`;
+          resumeUrl = `${BACKEND_URL}${resumeUrl}`;
         }
         
         setProfileData(prev => ({
@@ -472,7 +475,7 @@ const DashboardPage = () => {
     if (trimmedSkill && !profileData.skills.includes(trimmedSkill)) {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:5000/api/students/skills', {
+        const response = await fetch(`${API_BASE_URL}/students/skills`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -501,7 +504,7 @@ const DashboardPage = () => {
   const handleRemoveSkill = async (skillToRemove) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/students/skills/${encodeURIComponent(skillToRemove)}`, {
+      const response = await fetch(`${API_BASE_URL}/students/skills/${encodeURIComponent(skillToRemove)}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -558,7 +561,7 @@ const DashboardPage = () => {
       
       console.log('Sending profile update:', updateData);
       
-      const response = await fetch('http://localhost:5000/api/students/profile', {
+      const response = await fetch(`${API_BASE_URL}/students/profile`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -648,7 +651,7 @@ const DashboardPage = () => {
     
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/applications/${applicationId}/withdraw`, {
+      const response = await fetch(`${API_BASE_URL}/applications/${applicationId}/withdraw`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,

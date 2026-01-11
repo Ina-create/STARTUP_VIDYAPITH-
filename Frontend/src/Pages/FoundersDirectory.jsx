@@ -1,6 +1,8 @@
 // src/components/FoundersDirectory.jsx - UPDATED with real data from database
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';import Header from '../Components/Header/Header.jsx';
+import { Link, useNavigate } from 'react-router-dom';
+import Header from '../Components/Header/Header.jsx';
+import { API_BASE_URL } from '../constants';
 import './FoundersDirectory.css';
 
 const FoundersDirectory = () => {
@@ -45,7 +47,7 @@ const FoundersDirectory = () => {
       setLoading(true);
       console.log('🔄 Fetching real founders from API...');
       
-      const response = await fetch('http://localhost:5000/api/founders');
+      const response = await fetch(`${API_BASE_URL}/founders`);
       
       console.log('📡 Response status:', response.status);
       

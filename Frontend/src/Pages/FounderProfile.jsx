@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import './FounderProfile.css';
 import Header from '../Components/Header/Header.jsx';
+import { API_BASE_URL } from '../constants';
 
 const FounderProfile = () => {
   const { founderId } = useParams();
@@ -111,7 +112,7 @@ const FounderProfile = () => {
       console.log('Founder ID from URL:', founderId);
       
       // Try fetching founder by ID first
-      let response = await fetch(`http://localhost:5000/api/founders/${founderId}`, {
+      let response = await fetch(`${API_BASE_URL}/founders/${founderId}`, {
         headers
       });
       
@@ -133,7 +134,7 @@ const FounderProfile = () => {
       
       // If not found by founder ID, try by user ID
       console.log('Trying to fetch by user ID...');
-      response = await fetch(`http://localhost:5000/api/founders/user/${founderId}`, {
+      response = await fetch(`${API_BASE_URL}/founders/user/${founderId}`, {
         headers
       });
       
@@ -153,7 +154,7 @@ const FounderProfile = () => {
       
       // Try one more endpoint - get founder by userId
       console.log('Trying direct endpoint...');
-      response = await fetch(`http://localhost:5000/api/users/${founderId}/founder-profile`, {
+      response = await fetch(`${API_BASE_URL}/users/${founderId}/founder-profile`, {
         headers
       });
       
@@ -186,7 +187,7 @@ const FounderProfile = () => {
       
       console.log('Loading questions for founder ID:', profile._id);
       
-      const response = await fetch(`http://localhost:5000/api/questions/founder/${profile._id}`);
+      const response = await fetch(`${API_BASE_URL}/questions/founder/${profile._id}`);
       console.log('Questions endpoint response status:', response.status);
       
       if (response.ok) {
@@ -219,7 +220,7 @@ const FounderProfile = () => {
       
       console.log('Loading products for founder ID:', profile._id);
       
-      const response = await fetch(`http://localhost:5000/api/products/founder/${profile._id}`);
+      const response = await fetch(`${API_BASE_URL}/products/founder/${profile._id}`);
       console.log('Products endpoint response status:', response.status);
       
       if (response.ok) {
@@ -389,7 +390,7 @@ const FounderProfile = () => {
       
       console.log('Submitting question for founder ID:', profile._id);
       
-      const response = await fetch('http://localhost:5000/api/questions', {
+      const response = await fetch(`${API_BASE_URL}/questions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -445,7 +446,7 @@ const FounderProfile = () => {
     try {
       const token = localStorage.getItem('token');
       
-      const response = await fetch(`http://localhost:5000/api/questions/${questionId}/answer`, {
+      const response = await fetch(`${API_BASE_URL}/questions/${questionId}/answer`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -482,7 +483,7 @@ const FounderProfile = () => {
     try {
       const token = localStorage.getItem('token');
       
-      const response = await fetch(`http://localhost:5000/api/questions/${questionId}`, {
+      const response = await fetch(`${API_BASE_URL}/questions/${questionId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -516,7 +517,7 @@ const FounderProfile = () => {
       try {
         const token = localStorage.getItem('token');
         
-        const response = await fetch(`http://localhost:5000/api/questions/${questionId}`, {
+        const response = await fetch(`${API_BASE_URL}/questions/${questionId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -591,7 +592,7 @@ const FounderProfile = () => {
       }
       
       // Send application data
-      const response = await fetch('http://localhost:5000/api/applications', {
+      const response = await fetch(`${API_BASE_URL}/applications`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -654,7 +655,7 @@ const FounderProfile = () => {
         tags: newProduct.tags.filter(tag => tag.trim() !== '')
       };
       
-      const response = await fetch('http://localhost:5000/api/products', {
+      const response = await fetch(`${API_BASE_URL}/products`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

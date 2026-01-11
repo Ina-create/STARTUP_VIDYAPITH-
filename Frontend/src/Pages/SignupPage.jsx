@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../Pages/AuthContext';
+import { API_BASE_URL } from '../constants';
 import './AuthPages.css';
 
 const SignupPage = () => {
@@ -179,7 +180,7 @@ const SignupPage = () => {
       console.log('Submitting signup data:', signupData);
       
       // API CALL TO BACKEND
-      const response = await fetch('http://localhost:5000/api/auth/register', {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -343,7 +344,7 @@ const SignupPage = () => {
                 <span>5 Letters</span>
                 <span>5 Numbers</span>
               </div>
-            </div>
+            </div>  
           </div>
           
           <div className="already-have-account">
@@ -650,8 +651,8 @@ const SignupPage = () => {
                           <option value="Other">Other</option>
                         </select>
                         {errors.branch && (
-                          <div className="field-error">{errors.branch}</div>
-                        )}
+                      <div className="field-error">{errors.branch}</div>
+                    )}
                       </div>
                     </>
                   )}

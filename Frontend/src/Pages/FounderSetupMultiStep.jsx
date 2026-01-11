@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import './FounderSetup.css';
+import { API_BASE_URL } from '../constants';
 
 const FounderSetupMultiStep = () => {
   const { founderId } = useParams();
@@ -128,7 +129,7 @@ const FounderSetupMultiStep = () => {
   const checkBackendConnection = async () => {
     try {
       console.log('🔍 Checking backend connection...');
-      const response = await fetch('http://localhost:5000/api/founders/test/connection', {
+      const response = await fetch(`${API_BASE_URL}/founders/test/connection`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -161,7 +162,7 @@ const FounderSetupMultiStep = () => {
         console.log('🔄 Loading existing founder data for user:', userId);
         
         try {
-          const response = await fetch(`http://localhost:5000/api/founders/user/${userId}`, {
+          const response = await fetch(`${API_BASE_URL}/founders/user/${userId}`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json'
@@ -416,7 +417,7 @@ const compressImage = (file, maxWidth = 400, maxHeight = 400, quality = 0.7) => 
       // ✅ TRY TO SAVE TO BACKEND FIRST
       console.log('🔄 Attempting to save to backend at /api/founders/profile...');
       
-      const response = await fetch('http://localhost:5000/api/founders/profile', {
+      const response = await fetch(`${API_BASE_URL}/founders/profile`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -1004,7 +1005,7 @@ const compressImage = (file, maxWidth = 400, maxHeight = 400, quality = 0.7) => 
               
               // Test backend connection
               try {
-                const response = await fetch('http://localhost:5000/api/founders/test/connection');
+                const response = await fetch(`${API_BASE_URL}/founders/test/connection`);
                 const data = await response.json();
                 console.log('Backend test response:', data);
                 

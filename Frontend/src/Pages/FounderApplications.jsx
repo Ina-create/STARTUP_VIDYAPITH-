@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../Components/Header/Header.jsx';
+import { API_BASE_URL } from '../constants.jsx';
 import './FounderApplications.css';
 
 const FounderApplications = () => {
@@ -55,7 +56,7 @@ const FounderApplications = () => {
         return;
       }
 
-      const response = await fetch(`http://localhost:5000/api/applications/founder/${founderId}`, {
+      const response = await fetch(`${API_BASE_URL}/applications/founder/${founderId}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -106,7 +107,7 @@ const FounderApplications = () => {
       const token = localStorage.getItem('token');
       console.log('Loading profile for studentId:', studentId); // Debug
       
-      const response = await fetch(`http://localhost:5000/api/users/${studentId}`, {
+      const response = await fetch(`${API_BASE_URL}/users/${studentId}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -150,7 +151,7 @@ const FounderApplications = () => {
     try {
       const token = localStorage.getItem('token');
       
-      const response = await fetch(`http://localhost:5000/api/applications/${applicationId}/status`, {
+      const response = await fetch(`${API_BASE_URL}/applications/${applicationId}/status`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -233,7 +234,7 @@ const FounderApplications = () => {
     try {
       const token = localStorage.getItem('token');
       
-      const response = await fetch(`http://localhost:5000/api/applications/${applicationId}/status`, {
+      const response = await fetch(`${API_BASE_URL}/applications/${applicationId}/status`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -286,7 +287,7 @@ const FounderApplications = () => {
     try {
       const token = localStorage.getItem('token');
       
-      const response = await fetch(`http://localhost:5000/api/applications/${applicationId}/status`, {
+      const response = await fetch(`${API_BASE_URL}/applications/${applicationId}/status`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,

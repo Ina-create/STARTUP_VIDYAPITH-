@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../Pages/AuthContext';
+import { API_BASE_URL } from '../constants';
 import './AuthPages.css';
 
 const LoginPage = () => {
@@ -108,7 +109,7 @@ const LoginPage = () => {
           } else {
             // Try to fetch founder profile
             try {
-              const founderResponse = await fetch(`http://localhost:5000/api/founders/user/${userId}`, {
+              const founderResponse = await fetch(`${API_BASE_URL}/founders/user/${userId}`, {
                 headers: {
                   'Authorization': `Bearer ${result.token || localStorage.getItem('token')}`
                 }
@@ -239,7 +240,7 @@ const LoginPage = () => {
           } else {
             // Try to fetch founder profile or go to setup
             try {
-              const founderResponse = await fetch(`http://localhost:5000/api/founders/user/${userId}`);
+              const founderResponse = await fetch(`${API_BASE_URL}/founders/user/${userId}`);
               
               if (founderResponse.ok) {
                 const founderData = await founderResponse.json();

@@ -1,10 +1,13 @@
-// src/Pages/AuthContext.jsx - COMPLETE CORRECTED VERSION
+// src/Pages/AuthContext.jsx - UPDATED VERSION
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 
+// Import the constants
+import { API_BASE_URL } from '../constants.jsx';
+
 // Configure axios to send cookies with requests
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: API_BASE_URL,  // CHANGED: Using the constant instead of hardcoded URL
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json'
