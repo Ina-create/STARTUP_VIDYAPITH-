@@ -1,29 +1,29 @@
 import React from 'react';
 import './FeaturesSection.css';
-import './FeatureCard'
+import FeatureCard from './FeatureCard';
 
 const FeaturesSection = () => {
   const features = [
     {
-      image: '/idea.jpeg', // Replace with actual image path like '/images/startup-directory.svg'
+      image: '/idea.png',
       title: 'Startup Directory',
       description: 'Browse innovative startup ideas from Banasthali students',
       color: '#FF6B35'
     },
-    {
-      image: 'public/team.jpeg', // Replace with actual image path
+    { 
+      image: '/team.jpeg',
       title: 'Team Formation',
       description: 'Connect with talented students to build your dream team',
       color: '#4ECDC4'
     },
     {
-      image: 'public/idea.png', // Replace with actual image path
+      image: '/idea.png',
       title: 'Idea Validation',
       description: 'Get feedback and mentorship for your startup concepts',
       color: '#FFD166'
     },
     {
-      image: 'public/internship.jpeg', // Replace with actual image path
+      image: '/internship.jpeg',
       title: 'Internship Opportunities',
       description: 'Get internships inside startups and gain real-world experience',
       color: '#06D6A0'
@@ -32,9 +32,16 @@ const FeaturesSection = () => {
 
   return (
     <section className="features-section">
+      <div className="features-bg"></div>
+      <div className="features-orange-glow"></div>
       <div className="features-container">
         <div className="features-header">
           <h2 className="features-title">How It Works</h2>
+          <div className="title-underline">
+            <div className="underline-dot"></div>
+            <div className="underline-dot"></div>
+            <div className="underline-dot"></div>
+          </div>
           <p className="features-subtitle">
             A complete ecosystem for student entrepreneurs at Banasthali
           </p>
@@ -42,16 +49,14 @@ const FeaturesSection = () => {
         
         <div className="features-grid">
           {features.map((feature, index) => (
-            <div key={index} className="feature-card">
-              <div 
-                className="feature-image-container"
-                style={{ backgroundColor: `${feature.color}15` }}
-              >
-                <div className="feature-image">{feature.image}</div>
-              </div>
-              <h3 className="feature-title">{feature.title}</h3>
-              <p className="feature-description">{feature.description}</p>
-            </div>
+            <FeatureCard
+              key={index}
+              image={feature.image}
+              title={feature.title}
+              description={feature.description}
+              color={feature.color}
+              index={index}
+            />
           ))}
         </div>
       </div>

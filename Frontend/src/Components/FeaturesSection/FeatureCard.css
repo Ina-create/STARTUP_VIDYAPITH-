@@ -2,7 +2,7 @@
 .feature-card {
   position: relative;
   text-align: center;
-  padding: 50px 30px;
+  padding: 40px 25px;
   border-radius: 24px;
   background: linear-gradient(145deg, #ffffff 0%, #fcfcfc 100%);
   box-shadow: 
@@ -11,6 +11,7 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.9);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
   overflow: hidden;
+  height: 100%; /* Ensure equal height */
   min-height: 380px;
   display: flex;
   flex-direction: column;
@@ -18,6 +19,8 @@
   justify-content: center;
   border: 2px solid rgba(255, 107, 53, 0.1);
   z-index: 1;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .feature-card:hover {
@@ -31,13 +34,13 @@
 
 /* Image Container */
 .feature-image-container {
-  width: 140px;
-  height: 140px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 35px;
+  margin-bottom: 25px;
   background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
   border: 3px solid rgba(255, 255, 255, 0.8);
   box-shadow: 
@@ -47,6 +50,7 @@
   position: relative;
   z-index: 2;
   transition: all 0.4s ease;
+  flex-shrink: 0;
 }
 
 .feature-card:hover .feature-image-container {
@@ -77,8 +81,8 @@
 
 /* Image */
 .feature-image {
-  width: 75px;
-  height: 75px;
+  width: 65px;
+  height: 65px;
   object-fit: contain;
   filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.15));
   position: relative;
@@ -92,9 +96,9 @@
 
 /* Fallback for missing images */
 .feature-image-fallback {
-  font-size: 3.5rem;
+  font-size: 3rem;
   color: var(--card-color);
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
@@ -103,15 +107,21 @@
   text-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Hide fallback when image loads */
+.feature-image:not([style*="display: none"]) ~ .feature-image-fallback {
+  display: none;
+}
+
 /* Title */
 .feature-title {
-  font-size: 1.7rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   color: #1a1a1a;
   position: relative;
   display: inline-block;
-  padding-bottom: 12px;
+  padding-bottom: 10px;
+  line-height: 1.3;
 }
 
 .feature-title::after {
@@ -135,118 +145,88 @@
 /* Description */
 .feature-description {
   color: #555;
-  line-height: 1.7;
-  font-size: 1.05rem;
-  max-width: 280px;
+  line-height: 1.6;
+  font-size: 1rem;
+  max-width: 260px;
   margin: 0 auto;
   font-weight: 400;
-  padding: 15px;
+  padding: 12px;
   background: rgba(255, 255, 255, 0.7);
-  border-radius: 12px;
+  border-radius: 10px;
   border: 1px solid rgba(255, 107, 53, 0.08);
   backdrop-filter: blur(5px);
   transition: all 0.3s ease;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .feature-card:hover .feature-description {
   background: rgba(255, 255, 255, 0.9);
   border-color: rgba(255, 107, 53, 0.2);
-  transform: translateY(-5px);
+  transform: translateY(-3px);
   box-shadow: 0 12px 25px rgba(255, 107, 53, 0.08);
 }
 
 /* Corner Decorations */
 .card-corner {
   position: absolute;
-  width: 25px;
-  height: 25px;
+  width: 20px;
+  height: 20px;
   border: 2px solid rgba(255, 107, 53, 0.15);
   transition: all 0.4s ease;
   pointer-events: none;
 }
 
 .card-corner.top-left {
-  top: 15px;
-  left: 15px;
+  top: 12px;
+  left: 12px;
   border-top: 2px solid var(--card-color);
   border-left: 2px solid var(--card-color);
-  border-top-left-radius: 8px;
+  border-top-left-radius: 6px;
 }
 
 .card-corner.top-right {
-  top: 15px;
-  right: 15px;
+  top: 12px;
+  right: 12px;
   border-top: 2px solid var(--card-color);
   border-right: 2px solid var(--card-color);
-  border-top-right-radius: 8px;
+  border-top-right-radius: 6px;
 }
 
 .card-corner.bottom-left {
-  bottom: 15px;
-  left: 15px;
+  bottom: 12px;
+  left: 12px;
   border-bottom: 2px solid var(--card-color);
   border-left: 2px solid var(--card-color);
-  border-bottom-left-radius: 8px;
+  border-bottom-left-radius: 6px;
 }
 
 .card-corner.bottom-right {
-  bottom: 15px;
-  right: 15px;
+  bottom: 12px;
+  right: 12px;
   border-bottom: 2px solid var(--card-color);
   border-right: 2px solid var(--card-color);
-  border-bottom-right-radius: 8px;
+  border-bottom-right-radius: 6px;
 }
 
 .feature-card:hover .card-corner {
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   border-color: var(--card-color);
 }
 
 /* Responsive */
-@media (max-width: 1024px) {
-  .feature-card {
-    padding: 40px 25px;
-    min-height: 360px;
-  }
-  
-  .feature-image-container {
-    width: 120px;
-    height: 120px;
-  }
-  
-  .feature-image {
-    width: 65px;
-    height: 65px;
-  }
-}
-
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
   .feature-card {
     padding: 35px 20px;
-    min-height: 340px;
-  }
-  
-  .feature-title {
-    font-size: 1.5rem;
-  }
-  
-  .feature-description {
-    font-size: 1rem;
-    padding: 12px;
-  }
-}
-
-@media (max-width: 480px) {
-  .feature-card {
-    padding: 30px 15px;
-    min-height: 320px;
+    min-height: 350px;
   }
   
   .feature-image-container {
     width: 100px;
     height: 100px;
-    margin-bottom: 25px;
   }
   
   .feature-image {
@@ -255,10 +235,48 @@
   }
   
   .feature-title {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .feature-card {
+    padding: 30px 20px;
+    min-height: 320px;
+  }
+  
+  .feature-title {
+    font-size: 1.3rem;
   }
   
   .feature-description {
     font-size: 0.95rem;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .feature-card {
+    padding: 25px 15px;
+    min-height: 300px;
+  }
+  
+  .feature-image-container {
+    width: 90px;
+    height: 90px;
+    margin-bottom: 20px;
+  }
+  
+  .feature-image {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .feature-title {
+    font-size: 1.2rem;
+  }
+  
+  .feature-description {
+    font-size: 0.9rem;
   }
 }

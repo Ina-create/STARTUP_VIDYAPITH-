@@ -9,11 +9,13 @@ import SignupPage from './Pages/SignupPage';
 import DashboardPage from './Pages/DashboardPage';
 import './Pages/AuthPages.css'; // If you need global auth styles
 import Events from './Pages/Events/Events.jsx';
+import SuccessStories from './Pages/SuccessStories/SuccessStories';
 import About from "./Pages/About/About.jsx";
 import FounderProfile from './Pages/FounderProfile.jsx';
 import FounderSetupMultiStep from './Pages/FounderSetupMultiStep.jsx';
 import FoundersDirectory from './Pages/FoundersDirectory.jsx';
 import FounderApplications from './Pages/FounderApplications';
+
 
 // Protected Route Component
 const ProtectedRoute = ({ children, requireAdmin = false, requireFounder = false }) => {
@@ -54,6 +56,7 @@ function App() {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/events" element={<Events />} />
           <Route path="/about" element={<About />} />
+           <Route path="/success" element={<SuccessStories />} />
           <Route 
   path="/founder/applications/:founderId" 
   element={

@@ -1,9 +1,10 @@
-/* FeaturesSection.css - Beautiful Orange Theme */
+/* FeaturesSection.css - Beautiful Orange Theme - FIXED FOR 4 COLUMNS */
 .features-section {
   padding: 120px 0;
   background: linear-gradient(135deg, #fff9f5 0%, #fff1e6 100%);
   position: relative;
   overflow: hidden;
+  width: 100%;
 }
 
 /* Background Elements */
@@ -33,11 +34,13 @@
 }
 
 .features-container {
-  max-width: 1200px;
+  max-width: 1400px; /* Increased for 4 columns */
   margin: 0 auto;
   padding: 0 20px;
   position: relative;
   z-index: 2;
+  width: 100%; /* Ensure full width */
+  box-sizing: border-box;
 }
 
 /* Header */
@@ -124,13 +127,24 @@
   z-index: -1;
 }
 
-/* Grid */
+/* Grid - Fixed for 4 columns in a row */
 .features-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 40px;
+  grid-template-columns: repeat(4, 1fr); /* Fixed: Changed to 1fr for equal distribution */
+  gap: 30px;
   position: relative;
   z-index: 3;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* Ensure all cards are equal height */
+.features-grid > * {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
 /* Animations */
@@ -145,29 +159,64 @@
   }
 }
 
-/* Responsive */
-@media (max-width: 1024px) {
+/* Responsive - FIXED BREAKPOINTS */
+@media (max-width: 1400px) {
   .features-section {
     padding: 100px 0;
+  }
+  
+  .features-container {
+    max-width: 1200px;
+    padding: 0 30px;
+  }
+  
+  .features-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
   }
   
   .features-title {
     font-size: 3rem;
   }
+}
+
+/* At 1200px, switch to 2 columns */
+@media (max-width: 1200px) {
+  .features-section {
+    padding: 90px 0;
+  }
   
   .features-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr); /* 2 columns on medium screens */
     gap: 30px;
+    max-width: 900px;
+  }
+  
+  .features-title {
+    font-size: 2.8rem;
   }
 }
 
+@media (max-width: 992px) {
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+    max-width: 800px;
+  }
+  
+  .features-title {
+    font-size: 2.6rem;
+  }
+}
+
+/* At 768px, switch to 1 column */
 @media (max-width: 768px) {
   .features-section {
     padding: 80px 0;
   }
   
   .features-title {
-    font-size: 2.5rem;
+    font-size: 2.4rem;
   }
   
   .features-subtitle {
@@ -180,9 +229,8 @@
   }
   
   .features-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* 1 column on mobile */
     max-width: 450px;
-    margin: 0 auto;
     gap: 25px;
   }
   
@@ -196,13 +244,24 @@
   }
 }
 
+@media (max-width: 576px) {
+  .features-grid {
+    max-width: 400px;
+    gap: 20px;
+  }
+  
+  .features-title {
+    font-size: 2.2rem;
+  }
+}
+
 @media (max-width: 480px) {
   .features-section {
     padding: 60px 0;
   }
   
   .features-title {
-    font-size: 2.2rem;
+    font-size: 2rem;
   }
   
   .features-subtitle {
@@ -216,5 +275,10 @@
   
   .features-grid {
     gap: 20px;
+    padding: 0 10px;
+  }
+  
+  .features-container {
+    padding: 0 15px;
   }
 }

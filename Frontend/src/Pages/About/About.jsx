@@ -1,96 +1,230 @@
-import React, { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import Header from '../../Components/Header/Header.jsx'; // Add Header import
+import React, { useRef, useEffect, useState } from 'react';
+import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion';
+import { 
+  Rocket, Target, Lightbulb, TrendingUp, Users, Network, Database, 
+  ShieldCheck, GraduationCap, ArrowRight, Award, Globe, Zap, Heart,
+  ChevronRight, ExternalLink, Sparkles, BookOpen, Star, Globe2, Users2, Target as TargetIcon
+} from 'lucide-react';
+import Header from '../../Components/Header/Header.jsx';
 import './About.css';
 
 function About() {
+  const [isMounted, setIsMounted] = useState(false);
   const containerRef = useRef(null);
   const heroRef = useRef(null);
   const storyRef = useRef(null);
   const teamRef = useRef(null);
   const impactRef = useRef(null);
 
-  // Parallax effects
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // Safe scroll animations - only run when component is mounted
   const { scrollYProgress: heroProgress } = useScroll({
-    target: heroRef,
+    target: isMounted ? heroRef : undefined,
     offset: ["start start", "end start"]
   });
-  const heroParallax = useTransform(heroProgress, [0, 1], [0, -100]);
-
-  const { scrollYProgress: storyProgress } = useScroll({
-    target: storyRef,
-    offset: ["start end", "end start"]
-  });
-  const storyScale = useTransform(storyProgress, [0, 0.5, 1], [0.9, 1, 0.95]);
 
   const { scrollYProgress: teamProgress } = useScroll({
-    target: teamRef,
-    offset: ["start end", "end start"]
+    target: isMounted ? teamRef : undefined,
+    offset: ["start end", "center start"]
   });
-  const teamY = useTransform(teamProgress, [0, 1], [100, -50]);
 
-  const { scrollYProgress: impactProgress } = useScroll({
-    target: impactRef,
-    offset: ["start end", "end start"]
-  });
-  const impactScale = useTransform(impactProgress, [0, 0.5, 1], [0.85, 1, 0.9]);
+  const heroParallax = useTransform(heroProgress, [0, 1], [0, 100]);
+  const teamY = useTransform(teamProgress, [0, 1], [0, -50]);
+
+  // Use InView for section animations
+  const heroInView = useInView(heroRef, { once: true, amount: 0.3 });
+  const storyInView = useInView(storyRef, { once: true, amount: 0.3 });
+  const teamInView = useInView(teamRef, { once: true, amount: 0.3 });
+  const impactInView = useInView(impactRef, { once: true, amount: 0.3 });
+
+  // Team members data
+  const teamMembers = [
+    {
+      id: 1,
+      initials: "SV",
+      name: "Shruti Verma",
+      role: "Founder & Lead",
+      bio: "Full Stack Developer with passion for entrepreneurship",
+      color: "#FF6B35",
+      icon: <Rocket size={20} />
+    },
+    {
+      id: 2,
+      initials: "BP",
+      name: "Bhavya Pandey",
+      role: "Tech Lead",
+      bio: "Backend specialist & system architect",
+      color: "#4ECDC4",
+      icon: <Database size={20} />
+    },
+    {
+      id: 3,
+      initials: "RS",
+      name: "Riya Sharma",
+      role: "Design Head",
+      bio: "UI/UX designer & frontend enthusiast",
+      color: "#FFD166",
+      icon: <Sparkles size={20} />
+    },
+    {
+      id: 4,
+      initials: "AK",
+      name: "Anjali Kumar",
+      role: "Marketing & Outreach",
+      bio: "Community building & event management",
+      color: "#06D6A0",
+      icon: <Users2 size={20} />
+    }
+  ];
+
+  // Features data
+  const features = [
+    {
+      icon: <TrendingUp size={24} />,
+      title: "Strengthen Startup Culture",
+      description: "Build a thriving entrepreneurial ecosystem at Banasthali Vidyapith"
+    },
+    {
+      icon: <Users size={24} />,
+      title: "Access to Opportunities",
+      description: "Provide internships and entrepreneurial opportunities"
+    },
+    {
+      icon: <Network size={24} />,
+      title: "Networking Platform",
+      description: "Connect founders, students, and mentors"
+    },
+    {
+      icon: <Database size={24} />,
+      title: "Centralized Hub",
+      description: "One platform for all innovation resources"
+    },
+    {
+      icon: <ShieldCheck size={24} />,
+      title: "Verified Community",
+      description: "Secure and trusted network of innovators"
+    },
+    {
+      icon: <BookOpen size={24} />,
+      title: "Learning Resources",
+      description: "Curated content for startup development"
+    }
+  ];
+
+  // Stats data
+  const stats = [
+    { number: '50+', label: 'Startups Launched', icon: <Rocket size={24} />, color: '#FF6B35' },
+    { number: '100+', label: 'Student Members', icon: <Users size={24} />, color: '#4ECDC4' },
+    { number: '20+', label: 'Mentors', icon: <Award size={24} />, color: '#FFD166' },
+    { number: '15+', label: 'Events Conducted', icon: <Zap size={24} />, color: '#06D6A0' }
+  ];
+
+  // Animation variants
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.6 }
+    }
+  };
+
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
 
   return (
-    <div ref={containerRef} className="about-wilderness">
+    <div ref={containerRef} className="about-page">
       {/* Header Component */}
       <Header />
       
-      {/* Hero Section - Adjusted with padding for fixed header */}
-      <section ref={heroRef} className="about-hero" style={{ paddingTop: '80px' }}>
-        <motion.div 
-          className="hero-background"
-          style={{ y: heroParallax }}
-        >
+      {/* Hero Section */}
+      <section ref={heroRef} className="about-hero">
+        <div className="hero-background">
           <div className="hero-gradient"></div>
-        </motion.div>
-        
-        <div className="hero-content">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-            className="hero-header"
-          >
-            <h1 className="hero-title">
-              Startup<span className="highlight">_</span>Vidyapith
-            </h1>
-            <p className="hero-subtitle">
-              Empowering Student Entrepreneurs at Banasthali Vidyapith
-            </p>
-          </motion.div>
-          
-          <motion.div 
-            className="hero-scroll-indicator"
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            <div className="scroll-line"></div>
-          </motion.div>
+          <div className="hero-shapes">
+            <div className="hero-shape shape-1"></div>
+            <div className="hero-shape shape-2"></div>
+          </div>
         </div>
+
+        <div className="hero-decor decor-rocket">
+          <Rocket size={180} strokeWidth={1} />
+        </div>
+        <div className="hero-decor decor-target">
+          <Target size={150} strokeWidth={1} />
+        </div>
+
+        <motion.div 
+          className="hero-content"
+          initial="hidden"
+          animate={heroInView ? "visible" : "hidden"}
+          variants={staggerContainer}
+        >
+          <motion.div variants={fadeInUp} className="hero-header">
+            <motion.span 
+              className="hero-badge"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+            >
+              <Star size={16} /> About Startup Vidyapith
+            </motion.span>
+            
+            <h1 className="hero-title">
+              Empowering<span className="highlight">_</span>Innovators
+            </h1>
+            
+            <motion.p 
+              className="hero-subtitle"
+              variants={fadeInUp}
+              transition={{ delay: 0.1 }}
+            >
+              Building the next generation of student entrepreneurs at Banasthali Vidyapith
+            </motion.p>
+            
+            <motion.div 
+              className="hero-cta-container"
+              variants={fadeInUp}
+              transition={{ delay: 0.2 }}
+            >
+              <motion.button
+                className="hero-cta"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Explore Our Ecosystem <ArrowRight size={18} />
+              </motion.button>
+            </motion.div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* Impact Stats */}
       <section className="impact-stats">
         <div className="stats-container">
-          {[
-            { number: '50+', label: 'Startups Launched', color: '#FF6B35' },
-            { number: '100+', label: 'Student Members', color: '#4ECDC4' },
-            { number: '20+', label: 'Mentors', color: '#FFD166' },
-            { number: '15+', label: 'Events Conducted', color: '#06D6A0' }
-          ].map((stat, index) => (
+          {stats.map((stat, index) => (
             <motion.div 
               key={index}
               className="stat-card"
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
+              whileHover={{ y: -8 }}
             >
+              <div className="stat-icon" style={{ color: stat.color }}>
+                {stat.icon}
+              </div>
               <div className="stat-number" style={{ color: stat.color }}>
                 {stat.number}
               </div>
@@ -100,116 +234,188 @@ function About() {
         </div>
       </section>
 
-      {/* Our Story */}
-      <section ref={storyRef} className="about-story">
+      {/* What is Startup Vidyapith? */}
+      <section ref={storyRef} className="intro-section">
         <motion.div 
-          className="story-container"
-          style={{ scale: storyScale }}
+          className="intro-card hover-card"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.8 }}
         >
-          <div className="story-header">
-            <span className="section-label">Our Story</span>
-            <h2 className="section-title">
-              Where It All Began
-            </h2>
-            <div className="title-line">
-              <div className="line-dot"></div>
-            </div>
-          </div>
-          
-          <div className="story-content">
-            <div className="story-text">
-              <p className="story-paragraph">
-                Founded in the vibrant campus of Banasthali Vidyapith, Startup_Vidyapith 
-                emerged from a simple realization: every student has the potential to 
-                innovate and create.
-              </p>
-              <p className="story-paragraph">
-                What started as a small group of passionate students has grown into 
-                a thriving ecosystem where ideas meet execution, and dreams transform 
-                into impactful ventures.
-              </p>
-              <motion.button
-                className="story-button"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Read Our Journey
-                <svg className="button-arrow" viewBox="0 0 24 24">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </motion.button>
-            </div>
-            
-            <div className="story-image">
-              <motion.div 
-                className="image-frame"
-                initial={{ opacity: 0, x: 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
-              >
-                <div className="image-overlay"></div>
-                <div className="image-placeholder">
-                  <img 
-                    src="/images/team-photo.jpg" 
-                    alt="Team Founding Story" 
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                      e.target.parentNode.innerHTML = `
-                        <div class="image-fallback">
-                          <span>👭👭</span>
-                          <p>Our Founding Team</p>
-                        </div>
-                      `;
-                    }}
-                  />
-                </div>
-              </motion.div>
-            </div>
+          <motion.div 
+            className="icon-blue-circle"
+            whileHover={{ rotate: 360 }}
+            transition={{ duration: 0.6 }}
+          >
+            <Database size={40} />
+          </motion.div>
+          <div className="intro-text">
+            <h2>What is Startup Vidyapith?</h2>
+            <p>
+              Startup Vidyapith is a centralized platform for student-led startups to showcase ventures, 
+              offer internships, and build a vibrant entrepreneurial community within Banasthali Vidyapith.
+              We bridge the gap between academic learning and real-world entrepreneurship.
+            </p>
+            <motion.button
+              className="intro-button"
+              whileHover={{ x: 10 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Learn More <ChevronRight size={16} />
+            </motion.button>
           </div>
         </motion.div>
       </section>
 
-      {/* Mission & Vision */}
-      <section className="mission-section">
-        <div className="mission-grid">
+      {/* Vision & Mission */}
+      <section className="vision-mission-grid">
+        <motion.div 
+          className="vm-card hover-card"
+          initial={{ opacity: 0, x: -50 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.8 }}
+        >
           <motion.div 
-            className="mission-card mission-card-primary"
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            className="icon-blue-circle"
+            whileHover={{ scale: 1.1 }}
           >
-            <div className="mission-icon">🎯</div>
-            <h3 className="mission-title">Our Mission</h3>
-            <p className="mission-text">
-              To create a nurturing environment where student entrepreneurs 
-              can transform ideas into sustainable businesses through 
-              mentorship, resources, and community support.
-            </p>
+            <TargetIcon size={28} />
           </motion.div>
-          
+          <h3>Our Vision</h3>
+          <p>To create a strong ecosystem where students and young innovators can learn, build, and grow impactful startup ideas that solve real-world problems.</p>
+        </motion.div>
+        
+        <motion.div 
+          className="vm-card hover-card"
+          initial={{ opacity: 0, x: 50 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.8, delay: 0.1 }}
+        >
           <motion.div 
-            className="mission-card mission-card-secondary"
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            className="icon-blue-circle"
+            whileHover={{ scale: 1.1 }}
           >
-            <div className="mission-icon">🌟</div>
-            <h3 className="mission-title">Our Vision</h3>
-            <p className="mission-text">
-              To become the leading student-run innovation hub in India, 
-              empowering a generation of women entrepreneurs who drive 
-              technological and social change.
-            </p>
+            <Lightbulb size={28} />
           </motion.div>
+          <h3>Our Mission</h3>
+          <p>Bridge the gap between ideas and execution by offering structured learning, internships, mentorship, and entrepreneurship events to aspiring entrepreneurs.</p>
+        </motion.div>
+      </section>
+
+      {/* Goals & Features */}
+      <section className="goals-section">
+        <motion.div 
+          className="section-title"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6 }}
+        >
+          <span className="section-tag">Our Ecosystem</span>
+          <h2>Goals & Key Features</h2>
+          <p>Building a comprehensive ecosystem for student entrepreneurship</p>
+        </motion.div>
+        
+        <motion.div 
+          className="features-grid"
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+        >
+          {features.map((feature, index) => (
+            <motion.div 
+              key={index}
+              className="feature-item hover-card"
+              variants={fadeInUp}
+              whileHover={{ y: -8 }}
+            >
+              <motion.div 
+                className="icon-blue-circle"
+                whileHover={{ rotate: 180 }}
+                transition={{ duration: 0.5 }}
+              >
+                {feature.icon}
+              </motion.div>
+              <div>
+                <h4>{feature.title}</h4>
+                <p>{feature.description}</p>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </section>
+
+      {/* User Types */}
+      <section className="user-types-section">
+        <motion.div 
+          className="section-title"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6 }}
+        >
+          <span className="section-tag">For Everyone</span>
+          <h2>User Types</h2>
+          <p>Three roles working together to build a thriving startup ecosystem</p>
+        </motion.div>
+        
+        <div className="user-grid">
+          {[
+            {
+              icon: <ShieldCheck size={45} />,
+              title: "Admin",
+              description: "Manage platform, approve startups, and oversee community activities",
+              color: "#2563eb"
+            },
+            {
+              icon: <GraduationCap size={45} />,
+              title: "Student",
+              description: "Explore startups, apply for internships, and connect with founders",
+              color: "#10b981"
+            },
+            {
+              icon: <Rocket size={45} />,
+              title: "Founder",
+              description: "Showcase your startup, offer internships, and build your team",
+              color: "#8b5cf6"
+            }
+          ].map((user, index) => (
+            <motion.div 
+              key={index}
+              className="user-card hover-card"
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+              whileHover={{ y: -10 }}
+            >
+              <motion.div 
+                className="icon-large"
+                style={{ background: `linear-gradient(135deg, ${user.color}, ${user.color}80)` }}
+                whileHover={{ scale: 1.1, rotate: 5 }}
+              >
+                {user.icon}
+              </motion.div>
+              <h3>{user.title}</h3>
+              <p>{user.description}</p>
+            </motion.div>
+          ))}
         </div>
       </section>
 
       {/* Our Team */}
       <section ref={teamRef} className="team-section">
-        <div className="team-container">
+        <motion.div 
+          className="team-container"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6 }}
+        >
           <div className="team-header">
             <span className="section-label">Meet The Team</span>
             <h2 className="section-title">
@@ -220,140 +426,60 @@ function About() {
             </p>
           </div>
 
-          <motion.div 
-            className="team-grid"
-            style={{ y: teamY }}
-          >
-            {[1, 2, 3, 4].map((member, index) => (
+          <div className="team-grid">
+            {teamMembers.map((member, index) => (
               <motion.div 
-                key={index}
-                className="team-member"
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
+                key={member.id}
+                className="team-member hover-card"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 whileHover={{ y: -10 }}
               >
-                <div className="member-avatar">
-                  <div className="avatar-initials">
-                    {['SV', 'BP', 'RS', 'AK'][index]}
-                  </div>
-                  <div className="avatar-hover">
-                    <span className="hover-emoji">💼</span>
-                  </div>
+                <div className="member-avatar" style={{ backgroundColor: member.color + '20' }}>
+                  <motion.div 
+                    className="avatar-initials"
+                    style={{ color: member.color }}
+                    whileHover={{ scale: 1.1 }}
+                  >
+                    {member.initials}
+                  </motion.div>
+                  <motion.div 
+                    className="avatar-hover"
+                    initial={{ opacity: 0 }}
+                    whileHover={{ opacity: 1 }}
+                  >
+                    {member.icon}
+                  </motion.div>
                 </div>
                 <div className="member-info">
                   <h4 className="member-name">
-                    Team Member {member}
+                    {member.name}
                   </h4>
-                  <p className="member-role">
-                    {['Founder', 'Tech Lead', 'Design Head', 'Marketing'][index]}
+                  <p className="member-role" style={{ color: member.color }}>
+                    {member.role}
                   </p>
                   <p className="member-bio">
-                    Passionate about {['entrepreneurship', 'technology', 'design', 'innovation'][index]} 
-                    and creating impact through startups.
+                    {member.bio}
                   </p>
                 </div>
               </motion.div>
             ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Innovation Image */}
-      <section className="innovation-section">
-        <div className="innovation-container">
-          <motion.div 
-            className="innovation-image"
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1 }}
-          >
-            <div className="image-frame-large">
-              <img 
-                src="/images/cartoon-girl.png" 
-                alt="Innovation Illustration" 
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                  e.target.parentNode.innerHTML = `
-                    <div class="image-fallback-large">
-                      <span>🚀</span>
-                      <p>Innovation & Creativity</p>
-                    </div>
-                  `;
-                }}
-              />
-            </div>
-            <div className="image-caption">
-              <h3 className="caption-title">Innovation in Action</h3>
-              <p className="caption-text">
-                Symbolizing the creative spirit that drives every Startup_Vidyapith member
-              </p>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Impact & Vision */}
-      <section ref={impactRef} className="impact-section">
-        <motion.div 
-          className="impact-container"
-          style={{ scale: impactScale }}
-        >
-          <div className="impact-header">
-            <span className="section-label">Our Impact</span>
-            <h2 className="section-title">
-              Building The Future
-            </h2>
-          </div>
-          
-          <div className="impact-content">
-            <div className="impact-text">
-              <p className="impact-paragraph">
-                At Startup_Vidyapith, we believe in creating lasting impact. 
-                Through our initiatives, we've helped students launch ventures, 
-                develop essential skills, and build a supportive community of 
-                like-minded innovators.
-              </p>
-              
-              <div className="impact-features">
-                {[
-                  'Mentorship Programs',
-                  'Startup Incubation',
-                  'Skill Workshops',
-                  'Networking Events',
-                  'Funding Support',
-                  'Community Building'
-                ].map((feature, index) => (
-                  <motion.div 
-                    key={index}
-                    className="feature-tag"
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: index * 0.05 }}
-                  >
-                    <span className="feature-check">✓</span>
-                    {feature}
-                  </motion.div>
-                ))}
-              </div>
-            </div>
           </div>
         </motion.div>
       </section>
 
       {/* Join CTA */}
       <section className="join-section">
-        <div className="join-container">
-          <motion.div 
-            className="join-card"
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
+        <motion.div 
+          className="join-container"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.8 }}
+        >
+          <div className="join-card">
             <div className="join-content">
               <h2 className="join-title">Ready to Innovate?</h2>
               <p className="join-text">
@@ -364,47 +490,90 @@ function About() {
               <div className="join-buttons">
                 <motion.button
                   className="join-button primary"
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ scale: 1.05, x: 5 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  Become a Member
+                  Become a Member <ChevronRight size={18} />
                 </motion.button>
                 <motion.button
                   className="join-button secondary"
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ scale: 1.05, x: 5 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  Attend an Event
+                  Explore Startups <ExternalLink size={18} />
                 </motion.button>
               </div>
             </div>
             
             <div className="join-decoration">
-              <div className="decoration-circle"></div>
-              <div className="decoration-circle"></div>
+              <motion.div 
+                className="decoration-circle"
+                animate={{ 
+                  scale: [1, 1.2, 1],
+                  opacity: [0.3, 0.5, 0.3]
+                }}
+                transition={{ 
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              />
+              <motion.div 
+                className="decoration-circle"
+                animate={{ 
+                  scale: [1, 1.3, 1],
+                  opacity: [0.2, 0.4, 0.2]
+                }}
+                transition={{ 
+                  duration: 5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 1
+                }}
+              />
             </div>
-          </motion.div>
-        </div>
+          </div>
+        </motion.div>
       </section>
 
       {/* Footer */}
       <footer className="about-footer">
-        <div className="footer-container">
+        <motion.div 
+          className="footer-container"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6 }}
+        >
           <div className="footer-logo">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            >
+              <Globe2 size={24} className="globe-icon" />
+            </motion.div>
             Startup<span className="highlight">_</span>Vidyapith
           </div>
           <p className="footer-tagline">
             Empowering Student Entrepreneurs at Banasthali Vidyapith
           </p>
           <div className="footer-social">
-            <a href="#" className="social-link">Instagram</a>
-            <a href="#" className="social-link">LinkedIn</a>
-            <a href="#" className="social-link">Twitter</a>
+            {['Instagram', 'LinkedIn', 'Twitter', 'GitHub'].map((platform) => (
+              <motion.a 
+                key={platform} 
+                href="#" 
+                className="social-link"
+                whileHover={{ y: -3 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {platform}
+              </motion.a>
+            ))}
           </div>
           <p className="footer-copyright">
             © 2024 Startup_Vidyapith. All rights reserved.
           </p>
-        </div>
+        </motion.div>
       </footer>
     </div>
   );
