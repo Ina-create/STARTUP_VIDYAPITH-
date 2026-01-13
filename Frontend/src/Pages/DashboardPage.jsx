@@ -1,4 +1,4 @@
-// src/Pages/DashboardPage.js - UPDATED WITH ENVIRONMENT VARIABLES
+// src/Pages/DashboardPage.js - CLEANED UP VERSION WITHOUT DEBUG TEXT
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../Pages/AuthContext';
 import Header from '../Components/Header/Header.jsx';
@@ -41,18 +41,6 @@ const DashboardPage = () => {
   const [loading, setLoading] = useState(true);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadingResume, setUploadingResume] = useState(false);
-  const [debugInfo, setDebugInfo] = useState('');
-
-  // Debug useEffect
-  useEffect(() => {
-    console.log('=== DASHBOARD DEBUG ===');
-    console.log('User from context:', user);
-    console.log('Profile data state:', profileData);
-    console.log('Profile image exists:', !!profileData.profileImage);
-    console.log('Profile image URL:', profileData.profileImage);
-    console.log('API Base URL:', API_BASE_URL);
-    console.log('Backend URL:', BACKEND_URL);
-  }, [user, profileData]);
 
   useEffect(() => {
     if (user) {
@@ -74,20 +62,15 @@ const DashboardPage = () => {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      setDebugInfo('Fetching dashboard data...');
       
       const token = localStorage.getItem('token');
       
       if (!token) {
-        console.error('No token found');
-        setDebugInfo('No token found');
         setLoading(false);
         return;
       }
       
-      console.log('=== FETCHING STUDENT PROFILE ===');
-      
-      // Fetch student profile - FIRST check if endpoint exists
+      // Fetch student profile
       const profileResponse = await fetch(`${API_BASE_URL}/students/profile`, {
         headers: { 
           'Authorization': `Bearer ${token}`,
@@ -96,29 +79,21 @@ const DashboardPage = () => {
         credentials: 'include'
       });
       
-      console.log('Profile API Response Status:', profileResponse.status);
-      
       if (profileResponse.status === 404) {
-        setDebugInfo('Profile endpoint not found (404). Trying alternative endpoint...');
         // Try alternative endpoint
         await fetchStudentDataAlternative(token);
         return;
       }
       
       if (!profileResponse.ok) {
-        const errorText = await profileResponse.text();
-        console.error('Profile fetch error:', errorText);
-        setDebugInfo(`Profile fetch failed: ${profileResponse.status} - ${errorText}`);
         setLoading(false);
         return;
       }
       
       const profileDataFromApi = await profileResponse.json();
-      console.log('Profile API Response Data:', profileDataFromApi);
       
       if (profileDataFromApi.success && profileDataFromApi.user) {
         const userData = profileDataFromApi.user;
-        console.log('User data from API:', userData);
         
         // Map backend fields to frontend state
         const mappedData = {
@@ -134,9 +109,7 @@ const DashboardPage = () => {
           resume: userData.resume ? getAbsoluteUrl(userData.resume) : null
         };
         
-        console.log('Mapped profile data for display:', mappedData);
         setProfileData(mappedData);
-        setDebugInfo(`Profile loaded successfully. Image: ${mappedData.profileImage ? 'Yes' : 'No'}`);
         
         // Calculate profile completion
         calculateProfileCompletion(userData);
@@ -145,14 +118,10 @@ const DashboardPage = () => {
         await fetchApplications(token);
         
       } else {
-        console.error('Profile API returned success: false', profileDataFromApi.error);
-        setDebugInfo(`Profile API error: ${profileDataFromApi.error}`);
         setLoading(false);
       }
 
     } catch (error) {
-      console.error('Error fetching dashboard data:', error);
-      setDebugInfo(`Error: ${error.message}`);
       setLoading(false);
     }
   };
@@ -160,8 +129,6 @@ const DashboardPage = () => {
   // Alternative method to fetch student data
   const fetchStudentDataAlternative = async (token) => {
     try {
-      console.log('Trying alternative endpoint: /api/users/profile');
-      
       const response = await fetch(`${API_BASE_URL}/users/profile`, {
         headers: { 
           'Authorization': `Bearer ${token}`,
@@ -171,7 +138,6 @@ const DashboardPage = () => {
       
       if (response.ok) {
         const data = await response.json();
-        console.log('Alternative endpoint response:', data);
         
         if (data.success && data.user) {
           const userData = data.user;
@@ -189,11 +155,8 @@ const DashboardPage = () => {
           };
           
           setProfileData(mappedData);
-          setDebugInfo('Profile loaded via alternative endpoint');
           calculateProfileCompletion(userData);
         }
-      } else {
-        setDebugInfo('Alternative endpoint also failed');
       }
     } catch (error) {
       console.error('Error with alternative endpoint:', error);
@@ -203,8 +166,6 @@ const DashboardPage = () => {
   // Fetch applications separately
   const fetchApplications = async (token) => {
     try {
-      console.log('=== FETCHING APPLICATIONS ===');
-      
       // Try multiple endpoints for applications
       const endpoints = [
         `${API_BASE_URL}/students/applications`,
@@ -220,11 +181,8 @@ const DashboardPage = () => {
             }
           });
           
-          console.log(`Trying endpoint ${endpoint}, status:`, response.status);
-          
           if (response.ok) {
             const data = await response.json();
-            console.log(`Applications from ${endpoint}:`, data);
             
             if (data.success && data.applications) {
               const transformedApps = data.applications.slice(0, 5).map(app => ({
@@ -243,7 +201,6 @@ const DashboardPage = () => {
               }));
               
               setRecentApplications(transformedApps);
-              console.log('Applications loaded:', transformedApps.length);
               break;
             }
           }
@@ -325,7 +282,6 @@ const DashboardPage = () => {
     
     const completedFields = fields.filter(Boolean).length;
     completion = Math.round((completedFields / fields.length) * 100);
-    console.log('Profile completion calculated:', completion);
     setProfileCompletion(completion);
   };
 
@@ -338,7 +294,7 @@ const DashboardPage = () => {
     }));
   };
 
-  // Handle image upload - SIMPLIFIED
+  // Handle image upload
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -349,8 +305,6 @@ const DashboardPage = () => {
       const formData = new FormData();
       formData.append('image', file);
       
-      console.log('Uploading image...');
-      
       const response = await fetch(`${API_BASE_URL}/students/upload-image`, {
         method: 'POST',
         headers: {
@@ -359,15 +313,12 @@ const DashboardPage = () => {
         body: formData
       });
       
-      console.log('Image upload response status:', response.status);
-      
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`Upload failed: ${response.status} - ${errorText}`);
       }
       
       const data = await response.json();
-      console.log('Image upload response:', data);
       
       if (data.success) {
         // Get image URL and make it absolute
@@ -375,8 +326,6 @@ const DashboardPage = () => {
         if (imageUrl && !imageUrl.startsWith('http')) {
           imageUrl = `${BACKEND_URL}${imageUrl}`;
         }
-        
-        console.log('Image uploaded successfully:', imageUrl);
         
         // Update state
         setProfileData(prev => ({
@@ -408,7 +357,7 @@ const DashboardPage = () => {
     }
   };
 
-  // Handle resume upload - SIMPLIFIED
+  // Handle resume upload
   const handleResumeUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -433,7 +382,6 @@ const DashboardPage = () => {
       }
       
       const data = await response.json();
-      console.log('Resume upload response:', data);
       
       if (data.success) {
         let resumeUrl = data.resumeUrl || data.resume;
@@ -527,7 +475,7 @@ const DashboardPage = () => {
     }
   };
 
-  // Save profile changes - SIMPLIFIED
+  // Save profile changes
   const handleSaveProfile = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -559,8 +507,6 @@ const DashboardPage = () => {
         enrollmentNumber: profileData.enrollmentNumber ? profileData.enrollmentNumber.trim() : ''
       };
       
-      console.log('Sending profile update:', updateData);
-      
       const response = await fetch(`${API_BASE_URL}/students/profile`, {
         method: 'PUT',
         headers: {
@@ -570,15 +516,12 @@ const DashboardPage = () => {
         body: JSON.stringify(updateData)
       });
       
-      console.log('Update response status:', response.status);
-      
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`Update failed: ${response.status} - ${errorText}`);
       }
       
       const data = await response.json();
-      console.log('Update response data:', data);
       
       if (data.success) {
         setIsEditing(false);
@@ -594,8 +537,8 @@ const DashboardPage = () => {
             bio: data.user.bio || profileData.bio,
             skills: data.user.skills || profileData.skills,
             enrollmentNumber: data.user.enrollmentNumber || profileData.enrollmentNumber,
-            profileImage: profileData.profileImage, // Keep existing image
-            resume: profileData.resume, // Keep existing resume
+            profileImage: profileData.profileImage,
+            resume: profileData.resume,
             email: profileData.email
           };
           
@@ -695,7 +638,6 @@ const DashboardPage = () => {
           <div className="loading-container">
             <div className="spinner"></div>
             <p>Loading your dashboard...</p>
-            <p style={{fontSize: '12px', color: '#666', marginTop: '10px'}}>{debugInfo}</p>
           </div>
         </div>
       </div>
@@ -706,22 +648,7 @@ const DashboardPage = () => {
     <div className="dashboard-page">
       <Header />
       
-      {/* Debug info - remove in production */}
-      <div style={{
-        position: 'fixed',
-        top: '10px',
-        right: '10px',
-        background: 'rgba(0,0,0,0.8)',
-        color: 'white',
-        padding: '10px',
-        borderRadius: '5px',
-        fontSize: '12px',
-        zIndex: 1000,
-        maxWidth: '300px',
-        display: debugInfo ? 'block' : 'none'
-      }}>
-        <strong>Debug:</strong> {debugInfo}
-      </div>
+      {/* REMOVED: Debug info div that was showing on screen */}
       
       {/* Notification Panel */}
       {showNotificationPanel && (
@@ -948,7 +875,6 @@ const DashboardPage = () => {
                         onError={(e) => {
                           e.target.src = '/default-avatar.png';
                           e.target.onerror = null;
-                          console.log('Image failed to load, using default');
                         }}
                       />
                       {isEditing && (
