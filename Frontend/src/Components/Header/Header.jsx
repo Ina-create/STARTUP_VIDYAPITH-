@@ -1,4 +1,4 @@
-// src/components/Header.jsx - FIXED VERSION
+// src/components/Header.jsx - SIMPLIFIED VERSION WITH SINGLE PROFILE OPTION
 import React, { useState, useEffect } from 'react';
 import './Header.css';
 import { Menu, X, User, Bell, LogOut } from 'lucide-react';
@@ -49,6 +49,35 @@ const Header = () => {
     logout();
     navigate('/login');
     setShowUserDropdown(false);
+  };
+
+  // Function to handle profile click (single option for all users)
+  const handleProfileClick = () => {
+    if (!user) return;
+    
+    console.log('User data:', user); // Debug log
+    
+    // For founders - go to founder profile page
+    if (user.type === 'founder' || user.userType === 'founder') {
+      if (user.founderProfileId) {
+        console.log('Founder has profile ID:', user.founderProfileId);
+        navigate(`/founder/${user.founderProfileId}`);
+      } else if (user._id) {
+        console.log('Founder has user ID:', user._id);
+        // Try to fetch founder profile using user ID
+        navigate(`/founder/${user._id}`);
+      } else {
+        console.log('Founder has no ID, redirecting to dashboard');
+        navigate('/dashboard');
+      }
+    } else {
+      // For students, admins, and other types - go to dashboard
+      console.log('Non-founder user, redirecting to dashboard');
+      navigate('/dashboard');
+    }
+    
+    setShowUserDropdown(false);
+    setIsMobileMenuOpen(false);
   };
 
   const navLinks = [
@@ -179,7 +208,7 @@ const Header = () => {
                     </span>
                   </div>
                   
-                  {/* User Dropdown Menu */}
+                  {/* User Dropdown Menu - SINGLE Profile option */}
                   {showUserDropdown && (
                     <div className="user-dropdown">
                       <div className="dropdown-header">
@@ -192,16 +221,19 @@ const Header = () => {
                         </div>
                       </div>
                       <div className="dropdown-divider"></div>
-                      <Link to="/profile" className="dropdown-item" onClick={() => setShowUserDropdown(false)}>
-                        <User size={16} /> My Profile
-                      </Link>
-                      <Link to="/dashboard" className="dropdown-item" onClick={() => setShowUserDropdown(false)}>
-                        <span className="icon">📊</span> Dashboard
-                      </Link>
-                      <Link to="/settings" className="dropdown-item" onClick={() => setShowUserDropdown(false)}>
-                        <span className="icon">⚙️</span> Settings
-                      </Link>
+                      
+                      {/* SINGLE PROFILE ITEM - Shows "My Profile" for everyone */}
+                      <button 
+                        className="dropdown-item" 
+                        onClick={handleProfileClick}
+                      >
+                        <User size={16} /> 
+                        My Profile
+                      </button>
+                      
                       <div className="dropdown-divider"></div>
+                      
+                      {/* LOGOUT ITEM */}
                       <button className="dropdown-item logout" onClick={handleLogout}>
                         <LogOut size={16} /> Logout
                       </button>
@@ -248,7 +280,7 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Navigation - SINGLE Profile option */}
         <div className={`mobile-nav ${isMobileMenuOpen ? 'open' : ''}`}>
           <div className="mobile-nav-container">
             {/* Mobile Links */}
@@ -285,7 +317,7 @@ const Header = () => {
               ))}
             </ul>
 
-            {/* Mobile Actions - Updated for logged-in state */}
+            {/* Mobile Actions - SINGLE Profile option */}
             <div className="mobile-actions">
               {isAuthenticated && user ? (
                 <>
@@ -299,15 +331,16 @@ const Header = () => {
                     </div>
                   </div>
                   <div className="mobile-user-links">
-                    <Link to="/profile" className="mobile-user-link" onClick={() => setIsMobileMenuOpen(false)}>
-                      <User size={16} /> Profile
-                    </Link>
-                    <Link to="/dashboard" className="mobile-user-link" onClick={() => setIsMobileMenuOpen(false)}>
-                      📊 Dashboard
-                    </Link>
-                    <Link to="/settings" className="mobile-user-link" onClick={() => setIsMobileMenuOpen(false)}>
-                      ⚙️ Settings
-                    </Link>
+                    {/* SINGLE PROFILE LINK - Shows "My Profile" for everyone */}
+                    <button 
+                      className="mobile-user-link" 
+                      onClick={handleProfileClick}
+                    >
+                      <User size={16} /> 
+                      My Profile
+                    </button>
+                    
+                    {/* LOGOUT LINK */}
                     <button className="mobile-user-link logout" onClick={handleLogout}>
                       <LogOut size={16} /> Logout
                     </button>
@@ -336,6 +369,7 @@ const Header = () => {
               )}
               
               <div className="mobile-footer">
+                <div className="mobile-divider"></div>
                 <p className="university-info">
                   Banasthali Vidyapith • Rajasthan, India
                 </p>
