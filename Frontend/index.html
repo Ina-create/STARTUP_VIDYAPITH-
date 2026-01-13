@@ -4,7 +4,60 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
+    <title>Startup Vidyapith</title>
+    
+    <!-- HOTFIX: Redirect all API calls to production backend -->
+    <script>
+      // Force production API URL
+      console.log('🚀 Applying production API fix...');
+      
+      // Define global API constants
+      window.API_BASE_URL = 'https://startup-vidyapith.onrender.com/api';
+      window.BACKEND_URL = 'https://startup-vidyapith.onrender.com';
+      
+      // Override fetch to fix API calls
+      const originalFetch = window.fetch;
+      window.fetch = function(input, init) {
+        let url = input;
+        
+        if (typeof url === 'string') {
+          // Fix 1: Replace localhost:5000 with production URL
+          if (url.includes('localhost:5000')) {
+            url = url.replace('http://localhost:5000', 'https://startup-vidyapith.onrender.com');
+            console.log('🔄 Fixed localhost URL:', url);
+          }
+          
+          // Fix 2: If on Vercel domain and using relative /api, make absolute
+          if (url.startsWith('/api') && window.location.hostname.includes('vercel.app')) {
+            url = 'https://startup-vidyapith.onrender.com' + url;
+            console.log('🔄 Fixed relative API URL:', url);
+          }
+          
+          // Fix 3: Replace any http:// with https:// for production
+          if (url.startsWith('http://') && !url.includes('localhost')) {
+            url = url.replace('http://', 'https://');
+          }
+        }
+        
+        return originalFetch.call(this, url, init);
+      };
+      
+      // Override XMLHttpRequest too
+      const originalXHROpen = XMLHttpRequest.prototype.open;
+      XMLHttpRequest.prototype.open = function(method, url, async, user, password) {
+        if (typeof url === 'string') {
+          // Fix localhost:5000 in XHR requests
+          if (url.includes('localhost:5000')) {
+            url = url.replace('http://localhost:5000', 'https://startup-vidyapith.onrender.com');
+          }
+        }
+        return originalXHROpen.call(this, method, url, async, user, password);
+      };
+      
+      console.log('✅ Production API fix applied');
+      console.log('📡 API_BASE_URL set to:', window.API_BASE_URL);
+      console.log('🌐 Current hostname:', window.location.hostname);
+    </script>
   </head>
   <body>
     <div id="root"></div>
