@@ -1,359 +1,398 @@
-import React, { useState } from 'react';
-import './SuccessStories.css'; // Changed to regular CSS import
-import Header from '../../Components/Header/Header.jsx';
-import { 
-  FaQuoteLeft, 
-  FaTrophy, 
-  FaStar, 
-  FaGraduationCap, 
-  FaLeaf, 
-  FaHeartbeat,
-  FaLaptopCode,
-  FaTwitter, 
-  FaFacebookF, 
-  FaLinkedinIn, 
-  FaInstagram, 
-  FaYoutube 
-} from 'react-icons/fa';
+import React, { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
+import "./SuccessStories.css";
+import Header from "../../Components/Header/Header.jsx";
+import {
+  FaRocket,
+  FaRupeeSign,
+  FaCertificate,
+  FaUsers,
+  FaSearch,
+  FaTrophy,
+  FaArrowRight,
+  FaShareAlt,
+  FaLinkedinIn,
+  FaTwitter,
+  FaInstagram,
+  FaFacebookF,
+  FaEnvelope,
+  FaPhoneAlt,
+  FaMapMarkerAlt,
+  FaChevronUp,
+} from "react-icons/fa";
 
-const SuccessStories = () => {
-  const [activeFilter, setActiveFilter] = useState('all');
+// Counter Component: Runs only once when visible
+const StatCounter = ({ endValue }) => {
+  const [count, setCount] = useState(0);
+  const [hasRun, setHasRun] = useState(false);
+  const domRef = useRef();
 
-  const filters = [
-    { id: 'all', label: 'All Stories' },
-    { id: 'funded', label: 'Funded Startups' },
-    { id: 'tech', label: 'Tech' },
-    { id: 'social', label: 'Social Impact' },
-    { id: 'women', label: 'Women Founders' }
-  ];
-
-  const featuredStories = [
-    {
-      id: 1,
-      name: 'Rahul Verma',
-      title: 'Founder & CEO, AgriGrow',
-      company: 'AgriGrow',
-      description: 'AI-powered crop management solutions',
-      quote: '"Startup Vidyapith gave me the tools and confidence to transform my family farming background into a tech-driven agribusiness."',
-      achievement: 'Raised ₹12 Cr in Series A funding',
-      image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a',
-      category: ['tech', 'funded'],
-      logo: <FaLeaf />,
-      color: '#28a745'
-    },
-    {
-      id: 2,
-      name: 'Priya Sharma',
-      title: 'Co-founder, MedTech Solutions',
-      company: 'MedTech Solutions',
-      description: 'AI-driven diagnostic tools for early disease detection',
-      quote: '"The network I built at Startup Vidyapith connected me with the right investors and healthcare professionals."',
-      achievement: 'Partnered with 50+ hospitals nationwide',
-      image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2',
-      category: ['tech', 'women'],
-      logo: <FaHeartbeat />,
-      color: '#dc3545'
-    },
-    {
-      id: 3,
-      name: 'Arun Patel',
-      title: 'Founder, EduTech Innovators',
-      company: 'EduTech Innovators',
-      description: 'Personalized learning platforms for rural education',
-      quote: '"The incubator program helped me validate my idea and build a scalable business model."',
-      achievement: 'Impacting 10,000+ students',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d',
-      category: ['social'],
-      logo: <FaLaptopCode />,
-      color: '#007bff'
-    }
-  ];
-
-  const moreStories = [
-    {
-      id: 4,
-      name: 'Neha Gupta',
-      company: 'GreenPack',
-      description: 'Sustainable packaging solutions',
-      achievement: 'Reduced plastic waste by 500+ tons annually',
-      tags: ['Sustainability', 'Manufacturing'],
-      image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786'
-    },
-    {
-      id: 5,
-      name: 'Rajesh Kumar',
-      company: 'FinTech Solutions',
-      description: 'Blockchain-based financial services',
-      achievement: 'Processed ₹200+ Cr in transactions',
-      tags: ['FinTech', 'Blockchain'],
-      image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e'
-    },
-    {
-      id: 6,
-      name: 'Anjali Mehta',
-      company: 'TravelLocal',
-      description: 'Hyperlocal travel experiences platform',
-      achievement: 'Featured in Forbes 30 Under 30 Asia',
-      tags: ['Travel', 'Platform'],
-      image: 'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df'
-    }
-  ];
-
-  const testimonials = [
-    {
-      id: 1,
-      name: 'Sonia Reddy',
-      title: 'Founder, HealthTech Innovations',
-      quote: 'The mentorship I received at Startup Vidyapith was transformational. My mentor helped me navigate early-stage challenges I didn\'t even know existed.',
-      rating: 5,
-      image: 'https://randomuser.me/api/portraits/women/32.jpg'
-    },
-    {
-      id: 2,
-      name: 'Amit Joshi',
-      title: 'CEO, TechLogistics',
-      quote: 'The network I built here is priceless. I found my co-founder, first investors, and even early customers through Startup Vidyapith connections.',
-      rating: 4.5,
-      image: 'https://randomuser.me/api/portraits/men/54.jpg'
-    }
-  ];
-
-  const stats = [
-    { value: '250+', label: 'Startups Launched' },
-    { value: '₹85 Cr+', label: 'Total Funding Raised' },
-    { value: '1200+', label: 'Successful Alumni' },
-    { value: '15+', label: 'Countries with Alumni' }
-  ];
-
-  const filteredStories = activeFilter === 'all' 
-    ? featuredStories 
-    : featuredStories.filter(story => story.category.includes(activeFilter));
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !hasRun) {
+          let start = 0;
+          const finalValue = parseInt(endValue.replace(/[^0-9]/g, ""));
+          const timer = setInterval(() => {
+            start += Math.ceil(finalValue / 40);
+            if (start >= finalValue) {
+              setCount(finalValue);
+              setHasRun(true);
+              clearInterval(timer);
+            } else {
+              setCount(start);
+            }
+          }, 50);
+        }
+      },
+      { threshold: 0.5 },
+    );
+    if (domRef.current) observer.observe(domRef.current);
+    return () => observer.disconnect();
+  }, [endValue, hasRun]);
 
   return (
-    <div className="container">
-         <Header />
-      {/* Hero Section */}
-      <section className="hero">
-        <div className="heroContent">
-          <h1 className="heroTitle">
-            From Learners to <span className="highlight">Leaders</span>
-          </h1>
-          <p className="heroSubtitle">
-            Discover how our alumni are transforming industries and creating impact through innovation
-          </p>
-          
-          <div className="statsGrid">
-            {stats.map((stat, index) => (
-              <div key={index} className="statItem">
-                <h3>{stat.value}</h3>
-                <p>{stat.label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+    <span ref={domRef}>
+      {count}
+      {endValue.replace(/[0-9]/g, "")}
+    </span>
+  );
+};
 
-      {/* Filter Section */}
-      <section className="filterSection">
-        <div className="filterContainer">
-          <h2>Browse Stories by Category</h2>
-          <div className="filterButtons">
-            {filters.map(filter => (
-              <button
-                key={filter.id}
-                className={`filterBtn ${activeFilter === filter.id ? 'active' : ''}`}
-                onClick={() => setActiveFilter(filter.id)}
-              >
-                {filter.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
+const SuccessStories = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [expandedId, setExpandedId] = useState(null);
+  const [showTop, setShowTop] = useState(false);
+  const [showForm, setShowForm] = useState(false);
 
-      {/* Featured Stories */}
-      <section className="storiesSection">
-        <div className="sectionHeader">
-          <h2>Featured <span className="highlight">Success Stories</span></h2>
-          <p>Meet some of our most inspiring alumni who turned their ideas into thriving businesses</p>
-        </div>
+  const stories = [
+    {
+      id: 1,
+      founder: "Ananya Singh",
+      company: "EcoVeda Solutions",
+      img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800",
+      desc: "Revolutionizing sustainable packaging using agricultural waste to replace plastic.",
+      fullStory:
+        "Founded in 2023, EcoVeda started as a small campus project at Banasthali. Today, it has scaled to 5 states, providing livelihood to 200+ farmers and saving 500+ tons of plastic waste. Their journey is a testament to sustainable innovation and female leadership.",
+      achievement: "NITI Aayog Women Award",
+    },
+    {
+      id: 2,
+      founder: "Priya Sharma",
+      company: "Health-Her",
+      img: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=1600&fit=crop",
+      desc: "AI-driven diagnostic tools empowering rural women with accessible healthcare.",
+      fullStory:
+        "Health-Her developed a portable AI kit for early cancer detection. Priya and her team have screened over 10,000 women in remote villages of Rajasthan, making healthcare affordable, reachable, and culturally sensitive.",
+      achievement: "Startup India Grant Winner",
+    },
+  ];
 
-        <div className="featuredGrid">
-          {filteredStories.map(story => (
-            <div key={story.id} className="featuredCard">
-              <div 
-                className="storyImage"
-                style={{ backgroundImage: `url(${story.image})` }}
-              >
-                <div className="companyLogo" style={{ backgroundColor: story.color }}>
-                  {story.logo}
-                </div>
-              </div>
-              
-              <div className="storyContent">
-                <div className="storyHeader">
-                  <h3>{story.company}</h3>
-                  <p className="storyDescription">{story.description}</p>
-                </div>
-                
-                <div className="storyQuote">
-                  <FaQuoteLeft className="quoteIcon" />
-                  <p>{story.quote}</p>
-                </div>
-                
-                <div className="storyPerson">
-                  <div>
-                    <h4>{story.name}</h4>
-                    <p className="personTitle">{story.title}</p>
-                  </div>
-                  <div className="achievement">
-                    <FaTrophy />
-                    <span>{story.achievement}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+  const filtered = stories.filter(
+    (s) =>
+      s.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      s.founder.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
 
-      {/* More Stories Grid */}
-      <section className="moreStories">
-        <div className="sectionHeader">
-          <h2>More <span className="highlight">Inspiring Journeys</span></h2>
-          <p>Discover how our community is building the future, one startup at a time</p>
-        </div>
+  const copyLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    alert("Page link copied to clipboard!");
+  };
 
-        <div className="moreStoriesGrid">
-          {moreStories.map(story => (
-            <div key={story.id} className="moreStoryCard">
-              <div 
-                className="moreStoryImage"
-                style={{ backgroundImage: `url(${story.image})` }}
-              />
-              
-              <div className="moreStoryContent">
-                <h3>{story.company}</h3>
-                <p className="moreStoryDescription">{story.description}</p>
-                
-                <div className="moreStoryPerson">
-                  <h4>{story.name}</h4>
-                  <p className="moreStoryAchievement">{story.achievement}</p>
-                </div>
-                
-                <div className="tags">
-                  {story.tags.map((tag, index) => (
-                    <span key={index} className="tag">{tag}</span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+  const shareStory = (storyId, storyTitle) => {
+    const storyUrl = `${window.location.origin}/success-stories/${storyId}`;
 
-      {/* Testimonials */}
-      <section className="testimonialsSection">
-        <div className="sectionHeader">
-          <h2>What Our <span className="highlight">Alumni Say</span></h2>
-          <p>Hear directly from those who've walked the path before you</p>
-        </div>
+    if (navigator.share) {
+      // Modern Web Share API
+      navigator
+        .share({
+          title: `Check out ${storyTitle}`,
+          text: `Read the success story of ${storyTitle} on Startup Vidyapith!`,
+          url: storyUrl,
+        })
+        .then(() => console.log("Shared successfully!"))
+        .catch((err) => console.error("Error sharing:", err));
+    } else {
+      // Fallback: copy to clipboard
+      navigator.clipboard
+        .writeText(storyUrl)
+        .then(() => alert("Link copied to clipboard!"))
+        .catch(() => alert("Failed to copy. Use HTTPS or localhost."));
+    }
+  };
+  // Inside SuccessStories component, above return()
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
-        <div className="testimonialsGrid">
-          {testimonials.map(testimonial => (
-            <div key={testimonial.id} className="testimonialCard">
-              <div className="testimonialContent">
-                <FaQuoteLeft className="testimonialQuoteIcon" />
-                <p>{testimonial.quote}</p>
-              </div>
-              
-              <div className="testimonialAuthor">
-                <div className="authorImage">
-                  <img src={testimonial.image} alt={testimonial.name} />
-                </div>
-                <div className="authorInfo">
-                  <h4>{testimonial.name}</h4>
-                  <p>{testimonial.title}</p>
-                  <div className="rating">
-                    {[...Array(5)].map((_, i) => (
-                      <FaStar 
-                        key={i} 
-                        className={i < Math.floor(testimonial.rating) ? 'filledStar' : 'emptyStar'}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowTop(window.scrollY > 300); // button appears after scrolling 300px
+    };
 
-      {/* CTA Section */}
-      <section className="ctaSection">
-        <div className="ctaContent">
-          <h2>Ready to Write Your Success Story?</h2>
-          <p>Join Startup Vidyapith and turn your entrepreneurial dreams into reality</p>
-          <div className="ctaButtons">
-            <button className="ctaPrimary">Apply Now</button>
-            <button className="ctaSecondary">Explore Programs</button>
-          </div>
-        </div>
-      </section>
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-      {/* Footer */}
-      <footer className="footer">
-        <div className="footerContent">
-          <div className="footerColumn">
-            <div className="logo">
-              <FaGraduationCap />
-              <span>Startup<span className="logoHighlight">Vidyapith</span></span>
-            </div>
-            <p className="footerDescription">
-              Empowering the next generation of entrepreneurs with knowledge, mentorship, and resources to build successful startups.
+  return (
+    <div className="success-page">
+      <Header />
+
+      {/* --- HERO SECTION --- */}
+      <section className="hero-section">
+        <div className="hero-overlay"></div>
+        <div className="hero-content-wrapper">
+          <div className="hero-text-area">
+            <h1 className="hero-title">
+              Where Ideas Become <br />
+              <span className="gold-text">Legacies.</span>
+            </h1>
+            <p className="hero-quote">
+              "The best way to predict the future is to create it."
             </p>
-            <div className="socialLinks">
-              <a href="#"><FaTwitter /></a>
-              <a href="#"><FaFacebookF /></a>
-              <a href="#"><FaLinkedinIn /></a>
-              <a href="#"><FaInstagram /></a>
-              <a href="#"><FaYoutube /></a>
+          </div>
+
+          <div className="hero-stats-bottom">
+            <div className="stat-pill">
+              <FaRocket />
+              <div className="stat-info">
+                <p className="stat-val">
+                  <StatCounter endValue="150+" />
+                </p>
+                <p className="stat-lab">Incubated</p>
+              </div>
             </div>
-          </div>
-          
-          <div className="footerColumn">
-            <h3>Quick Links</h3>
-            <ul className="footerLinks">
-              <li><a href="#">Home</a></li>
-              <li><a href="#">Courses</a></li>
-              <li><a href="#">Mentors</a></li>
-              <li><a href="#">Success Stories</a></li>
-              <li><a href="#">About Us</a></li>
-            </ul>
-          </div>
-          
-          <div className="footerColumn">
-            <h3>Contact Us</h3>
-            <ul className="contactInfo">
-              <li>Startup Hub, Bengaluru, India</li>
-              <li>+91 98765 43210</li>
-              <li>info@startupvidyapith.com</li>
-            </ul>
-            
-            <div className="newsletter">
-              <h4>Subscribe to our newsletter</h4>
-              <div className="newsletterForm">
-                <input type="email" placeholder="Your email address" />
-                <button type="submit">Subscribe</button>
+            <div className="stat-pill">
+              <FaRupeeSign />
+              <div className="stat-info">
+                <p className="stat-val">
+                  <StatCounter endValue="120Cr+" />
+                </p>
+                <p className="stat-lab">Funding</p>
+              </div>
+            </div>
+            <div className="stat-pill">
+              <FaCertificate />
+              <div className="stat-info">
+                <p className="stat-val">
+                  <StatCounter endValue="25+" />
+                </p>
+                <p className="stat-lab">Patents</p>
               </div>
             </div>
           </div>
         </div>
-        
-        <div className="footerBottom">
-          <p>&copy; 2024 Startup Vidyapith. All rights reserved.</p>
+      </section>
+
+      <section className="search-section">
+        <div className="search-bar-container">
+          <div className="search-wrapper">
+            <FaSearch className="search-icon-inside" />
+            <input
+              type="text"
+              className="search-input-field"
+              placeholder="Search by startup or founder name..."
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* --- MAIN STORIES SECTION --- */}
+      <section className="stories-display-area">
+        <div className="stories-list">
+          {filtered.length > 0 ? (
+            filtered.map((s) => (
+              <div key={s.id} className="story-card-h">
+                <div className="card-image-box">
+                  <img src={s.img} alt={s.founder} />
+                </div>
+                <div className="card-content-box">
+                  <div className="card-header-meta">
+                    <span className="founder-name-tag">{s.founder}</span>
+                    <button
+                      className="share-icon-btn"
+                      onClick={() => shareStory(s.id, s.company)}
+                      title="Share Story"
+                    >
+                      <FaShareAlt />
+                    </button>
+                  </div>
+                  <h3>{s.company}</h3>
+                  <p className="main-desc">
+                    {expandedId === s.id ? s.fullStory : s.desc}
+                  </p>
+                  <div className="achievement-badge">
+                    <FaTrophy /> <span>{s.achievement}</span>
+                  </div>
+                  <div className="card-footer-actions">
+                    <button
+                      className="expand-btn"
+                      onClick={() =>
+                        setExpandedId(expandedId === s.id ? null : s.id)
+                      }
+                    >
+                      {expandedId === s.id ? "Show Less" : "Read Full Journey"}{" "}
+                      <FaArrowRight />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="not-found-msg">
+              <h3>No success stories found.</h3>
+              <p>Try searching with a different keyword.</p>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* --- CTA SECTION --- */}
+      <section className="apply-cta-section">
+        <div className="cta-content">
+          <h2>
+            Ready to share your own{" "}
+            <span className="gold-text">Success Story?</span>
+          </h2>
+          <p>
+            Join Startup Vidyapith and showcase your journey to inspire others.
+          </p>
+          <button className="cta-btn" onClick={() => setShowForm(true)}>
+            Submit Your Story
+          </button>
+        </div>
+      </section>
+      {/* FORM MODAL
+      {showStoryForm && (
+        <div className="story-form-overlay">
+          <div className="story-form-box">
+            <h3>Submit Your Success Story</h3>
+            <input type="text" placeholder="Founder Name" />
+            <input type="text" placeholder="Startup Name" />
+            <textarea placeholder="Your Story (short)" />
+
+            <div className="form-actions">
+              <button
+                className="submit-btn"
+                onClick={() => {
+                  alert("Story submitted for review!");
+                  setShowStoryForm(false);
+                }}
+              >
+                Submit
+              </button>
+              <button
+                className="cancel-btn"
+                onClick={() => setShowStoryForm(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )} */}
+      {/* --- FOOTER SECTION --- */}
+      <footer className="footer-main">
+        <div className="footer-top-grid">
+          <div className="footer-col brand-info">
+            <h2 className="footer-logo">
+              Startup <span>Vidyapith</span>
+            </h2>
+            <p>
+              Empowering women founders to lead the global market through
+              innovation and resilience.
+            </p>
+            <div className="social-links-footer">
+              <a
+                href="https://www.linkedin.com/company/startup-vidyapith"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaLinkedinIn />
+              </a>
+              <a
+                href="https://twitter.com/StartupVidyapith"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaTwitter />
+              </a>
+              <a
+                href="https://instagram.com/startupvidyapith"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaInstagram />
+              </a>
+              <a
+                href="https://facebook.com/startupvidyapith"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaFacebookF />
+              </a>
+            </div>
+          </div>
+
+          <div className="footer-col quick-links">
+            <h4>Explore</h4>
+            <ul>
+              <li>
+                <Link to="/">Home</Link>
+              </li>
+              {/* <li>
+                <Link to="/success-stories">Success Stories</Link>
+              </li> */}
+              <li>
+                <Link to="/about">About Us</Link>
+              </li>
+            </ul>
+          </div>
+
+          <div className="footer-col contact-info">
+            <h4>Connectivity</h4>
+            <div className="contact-item">
+              <FaEnvelope className="footer-icon" />
+              <p>hub@banasthali.ac.in</p>
+            </div>
+            <div className="contact-item">
+              <FaPhoneAlt className="footer-icon" />
+              <p>+91 1438 228456</p>
+            </div>
+            <div className="contact-item">
+              <FaMapMarkerAlt className="footer-icon" />
+              <p>Rajasthan, India</p>
+            </div>
+          </div>
+        </div>
+        <div className="footer-bottom-bar">
+          <p>&copy; 2026 Startup Vidyapith. All Rights Reserved.</p>
         </div>
       </footer>
+      {showForm && (
+        <div className="modal-overlay" onClick={() => setShowForm(false)}>
+          <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+            <button
+              className="modal-close-btn"
+              onClick={() => setShowForm(false)}
+            >
+              ×
+            </button>
+
+            <h3>Submit Your Success Story</h3>
+
+            <form>
+              <input type="text" placeholder="Founder Name" required />
+              <input type="text" placeholder="Startup Name" required />
+              <input type="email" placeholder="Email" required />
+              <textarea placeholder="Short story (max 3–4 lines)" />
+
+              <button type="submit">Submit</button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
